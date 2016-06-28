@@ -1,0 +1,94 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class Player : MonoBehaviour {
+
+	/* Current health of the player. */
+	public float Health { get; private set; }
+
+	/* The depth of the player. */
+	public float Depth { get; private set; }
+
+	/* How fast the player is propelled. */
+	public float Speed { get; private set; }
+
+	/* True if Player is in small state, false otherwise. */
+	bool isSmall;
+
+	/* Set of abilities that the player currently posesses. */
+	private HashSet<Powerup> abilities;
+
+	/* Player's rigidbody componennt. */
+	private Rigidbody2D rb;
+
+	/* Player's cabin light. */
+	private Light cabinLight;
+
+	/* Camera Transform */
+//	private Transform camera;
+
+	/* How far the camera is offset from the player. */
+//	private float cameraOffset;
+
+	// Use this for initialization
+	void Start () {
+		Health = 100f;
+		Depth = 0f;
+		Speed = 1f;
+		isSmall = false;
+		abilities = new HashSet<Powerup> ();
+		rb = GetComponent<Rigidbody2D> ();
+		cabinLight = GameObject.FindGameObjectWithTag ("CabinLight").GetComponent<Light> ();
+//		camera = GameObject.FindGameObjectWithTag ("MainCamera").transform;
+//		cameraOffset = Vector3.Distance (transform.position, camera.position);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+		print (transform.position.y);
+
+		/* Health check. */
+		if (Health < 0) {
+			//death animation
+			//game over screen
+		}
+
+		/* Player movement. */
+		float horizontalForce = -Input.GetAxis ("Horizontal");
+		float verticalForce = -Input.GetAxis ("Vertical");
+		rb.AddForce (new Vector2 (horizontalForce, verticalForce) * Speed);
+
+		/* Player abilities. */
+		if (Input.GetKeyDown ("space")) {
+			if (isSmall) {
+				transform.localScale *= 5;
+				cabinLight.range *= 5;
+			} else {
+				transform.localScale /= 5;
+				cabinLight.range /= 5;
+			}
+			isSmall = !isSmall;
+		}
+
+		/* Ambient lighting control. */
+		RenderSettings.ambientLight += Color.black * Time.deltaTime;
+
+		/* Camera control. */
+//		cameraOffset = Vector3.Distance (transform.position, camera.position);
+	}
+
+	/* Reduce Health by DMG. */
+	public void TakeDamage (float dmg) {
+		Health -= dmg;
+	}
+
+	public void AddAbility (Powerup ability) {
+		if (!abilities.Contains (ability)) {
+			abilities.Add (ability);
+		} else {
+			ability.Upgrade ();
+		}
+	}
+}
