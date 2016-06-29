@@ -3,8 +3,8 @@ using System.Collections;
 
 public abstract class Powerup : MonoBehaviour {
 
-	/* TRUE if ability can be used, FALSE if it is a passive ability. */
-	public bool IsActive { get; protected set; }
+	/* TRUE if ability is a passive ability, FALSE if can be used for an active effect. */
+	public bool IsPassive { get; protected set; }
 
 	/* Cooldown for the ability if it is an active. */
 	public float Cooldown { get; protected set; }
@@ -21,7 +21,10 @@ public abstract class Powerup : MonoBehaviour {
 	}
 
 	/* Called on collection of the powerup. */
-	void OnCollisionEnter2D (Collision2D coll) {
+	void OnTriggerEnter2D (Collider2D coll) {
+		if (coll.tag == "Player") {
+			gameObject.SetActive (false);
+		}
 	}
 
 	/* Upgrade ability when player collects same ability again. */
