@@ -35,7 +35,7 @@ public class Player : MonoBehaviour {
 	void Start () {
 		Health = 100f;
 		Depth = 0f;
-		Speed = 1f;
+		Speed = 4f;
 		isSmall = false;
 		abilities = new HashSet<Powerup> ();
 		rb = GetComponent<Rigidbody2D> ();
@@ -46,8 +46,6 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-		print (transform.position.y);
 
 		/* Health check. */
 		if (Health < 0) {
