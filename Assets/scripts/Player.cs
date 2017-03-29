@@ -25,6 +25,11 @@ public class Player : MonoBehaviour {
 	/* Player's cabin light. */
 	private Light cabinLight;
 
+
+	/* Powerups */
+
+	bool canShrink;
+
 	/* Camera Transform */
 //	private Transform camera;
 
@@ -42,6 +47,7 @@ public class Player : MonoBehaviour {
 		cabinLight = GameObject.FindGameObjectWithTag ("CabinLight").GetComponent<Light> ();
 //		camera = GameObject.FindGameObjectWithTag ("MainCamera").transform;
 //		cameraOffset = Vector3.Distance (transform.position, camera.position);
+		canShrink = false;
 	}
 	
 	// Update is called once per frame
@@ -59,7 +65,7 @@ public class Player : MonoBehaviour {
 		rb.AddForce (new Vector2 (horizontalForce, verticalForce) * Speed);
 
 		/* Player abilities. */
-		if (Input.GetKeyDown ("space")) {
+		if (canShrink && Input.GetKeyDown ("space")) {
 			if (isSmall) {
 				transform.localScale *= 5;
 				cabinLight.range *= 5;
@@ -87,6 +93,17 @@ public class Player : MonoBehaviour {
 			abilities.Add (ability);
 		} else {
 			ability.Upgrade ();
+		}
+	}
+
+	void OnTriggerEnter2D (Collider2D coll) {
+		print (coll.tag);
+		switch (coll.tag) {
+		case ("Shrink"):
+			canShrink = true;
+			break;
+		default:
+			break;
 		}
 	}
 }
